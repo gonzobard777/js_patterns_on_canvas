@@ -1,8 +1,8 @@
 {
   "start_url": ".",
   "display": "standalone",
-  "short_name": "Editor",
-  "name": "Editor",
+  "short_name": "Patterns on canvas",
+  "name": "Patterns on canvas",
   "icons": [
     {
       "src": "logo16.png",
