@@ -1,11 +1,11 @@
 import {IMatrix, IPoint, Matrix} from "@do-while-for-each/math";
 
-abstract class BasePatternDrawer {
+abstract class BasePattern {
   makeFill = false;
   makeStroke = false;
 
   protected constructor(protected context: CanvasRenderingContext2D,
-                        protected opt: IPatternDrawerOpt,
+                        protected opt: IPatternOpt,
   ) {
     const {lineDash, lineWidth, fillStyle, strokeStyle} = opt;
     if (lineDash !== undefined) {
@@ -25,16 +25,16 @@ abstract class BasePatternDrawer {
   }
 }
 
-export class LinePatternDrawer extends BasePatternDrawer {
+export class LinePattern extends BasePattern {
 
   constructor(private pattern: IPoint[],
-              opt: IPatternDrawerOpt,
+              opt: IPatternOpt,
               context: CanvasRenderingContext2D,
   ) {
     super(context, opt);
   }
 
-  run(conv: IMatrix) {
+  draw(conv: IMatrix) {
     const points = this.pattern.map(p => Matrix.apply(conv, p));
 
     this.context.beginPath();
@@ -57,14 +57,14 @@ export class LinePatternDrawer extends BasePatternDrawer {
 
 }
 
-export class ArcPatternDrawer extends BasePatternDrawer {
+export class ArcPattern extends BasePattern {
   pattern: Path2D;
 
   constructor(center: IPoint,
               radius: number,
               startAngle: number,
               endAngle: number,
-              opt: IPatternDrawerOpt,
+              opt: IPatternOpt,
               context: CanvasRenderingContext2D,
   ) {
     super(context, opt);
@@ -72,7 +72,7 @@ export class ArcPatternDrawer extends BasePatternDrawer {
     this.pattern.arc(center[0], center[1], radius, startAngle, endAngle);
   }
 
-  run(conv: IMatrix) {
+  draw(conv: IMatrix) {
     const path = new Path2D();
     path.addPath(this.pattern, {a: conv[0], b: conv[1], c: conv[2], d: conv[3], e: conv[4], f: conv[5]});
     if (this.makeFill) {
@@ -85,12 +85,12 @@ export class ArcPatternDrawer extends BasePatternDrawer {
 
 }
 
-export interface IPatternDrawer {
-  run(conv: IMatrix): void;
+export interface IPattern {
+  draw(conv: IMatrix): void;
 }
 
 
-export interface IPatternDrawerOpt {
+export interface IPatternOpt {
   lineDash?: number[]; // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash
   lineWidth?: number;
   fillStyle?: string;
