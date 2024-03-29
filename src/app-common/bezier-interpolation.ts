@@ -4,11 +4,16 @@ import {IPoint} from "@do-while-for-each/math";
 const tension = 0.7;
 
 // рисование на канвасе
-export function drawAsBezierInterpolation(context: CanvasRenderingContext2D, points: IPoint[]): void {
+export function drawAsBezierInterpolation(context: CanvasRenderingContext2D, points: IPoint[], strokeStyle?: string): void {
+  context.save();
   const data = prepareData(points);
   if (!data) return;
   const pathStr = bezierInterpolation(data, tension);
+  if (strokeStyle) {
+    context.strokeStyle = strokeStyle;
+  }
   context.stroke(new Path2D(pathStr));
+  context.restore();
 }
 
 // отдает svg <path d="строковое значение">
