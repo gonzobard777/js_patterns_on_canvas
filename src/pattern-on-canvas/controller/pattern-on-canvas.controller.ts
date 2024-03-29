@@ -1,8 +1,8 @@
 import {IPoint, Matrix, Operator} from "@do-while-for-each/math";
-import {points} from "../../app-common/constant";
-import {drawAsBezierInterpolation, getPathAsBezierInterpolation} from "../../app-common/bezier-interpolation";
 import * as pathProps from 'svg-path-properties';
-import {ILineDrawOnCanvasOpt, LineDraw} from "../../app-common/draw-straight-line";
+import {drawAsBezierInterpolation, getPathAsBezierInterpolation} from "../../app-common/bezier-interpolation";
+import {ArcPatternDrawer, IPatternDrawer, LinePatternDrawer} from "../../app-common/draw";
+import {points} from "../../app-common/constant";
 
 export class PatternOnCanvasController {
 
@@ -16,7 +16,12 @@ export class PatternOnCanvasController {
   render() {
     drawAsBezierInterpolation(this.context, points);
     const svgProps = pathProps.svgPathProperties(getPathAsBezierInterpolation(points));
-    drawPattern(triangle, 20, 35, {strokeStyle: 'red', fillStyle: 'red'}, this.context, svgProps);
+
+    const linePatternDraw = new LinePatternDrawer(triangle, {strokeStyle: 'black', fillStyle: 'white'}, this.context);
+    drawPattern(linePatternDraw, 20, 35, svgProps);
+
+    const arcPatternDraw = new ArcPatternDrawer([0, 0], 7, Math.PI, 2 * Math.PI, {strokeStyle: 'black', fillStyle: 'white'}, this.context);
+    drawPattern(arcPatternDraw, 20, 35, svgProps);
   }
 
   dispose() {
@@ -33,14 +38,11 @@ const triangle: IPoint[] = [
 ];
 
 function drawPattern(
-  pattern: IPoint[],
+  drawer: IPatternDrawer,
   start: number, // первая точка, от которой будет отрисовам паттерн, пиксели
   step: number, // шаг между точками отрисовки паттерна, пиксели
-  opt: ILineDrawOnCanvasOpt, // настройки для отрисовки паттерна
-  context: CanvasRenderingContext2D,
   svgProps: ReturnType<typeof pathProps.svgPathProperties>,
 ): void {
-  const lineDraw = new LineDraw(context, opt);
   for (let i = start; i < svgProps.getTotalLength() - start; i += step) {
     const point = svgProps.getPointAtLength(i);
     const tangent = svgProps.getTangentAtLength(i);
@@ -49,9 +51,7 @@ function drawPattern(
       Operator.rotateAtPoint([point.x, point.y], tangentAngle, 'rad'), // (2) повернуть
       [1, 0, 0, 1, point.x, point.y],                                  // (1) переместить все точки
     );
-    lineDraw.run(
-      pattern.map(p => Matrix.apply(conv, p))
-    );
+    drawer.run(conv);
 
     // касательная прямая
     // const k = Math.tan(tangentAngle);
@@ -61,7 +61,3 @@ function drawPattern(
     // drawLine(context, [[x1, k * x1 + b], [x2, k * x2 + b]], {strokeStyle: 'blue'});
   }
 }
-
-
-
-
