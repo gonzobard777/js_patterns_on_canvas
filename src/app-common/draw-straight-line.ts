@@ -34,7 +34,7 @@ export function drawStraightLine(context: CanvasRenderingContext2D, points: IPoi
 export function drawLine(
   context: CanvasRenderingContext2D,
   line: IPoint[],
-  {lineDash, lineWidth, strokeStyle, fillStyle}: IDrawLineOnCanvasOpt = {},
+  {lineDash, lineWidth, strokeStyle, fillStyle}: ILineDrawOnCanvasOpt = {},
 ) {
 
   const isOptOverrides = !!lineDash || !!lineWidth || !!strokeStyle;
@@ -74,10 +74,58 @@ export function drawLine(
   }
 }
 
+export class LineDraw {
 
-export interface IDrawLineOnCanvasOpt {
+  makeStroke = true;
+  makeFill = false;
+
+  constructor(private context: CanvasRenderingContext2D,
+              {lineDash, lineWidth, fillStyle, strokeStyle, makeStroke}: ILineDrawOnCanvasOpt) {
+    if (lineDash !== undefined) {
+      context.setLineDash(lineDash);
+    }
+    if (lineWidth !== undefined) {
+      context.lineWidth = lineWidth;
+    }
+    if (fillStyle !== undefined) {
+      context.fillStyle = fillStyle;
+      this.makeFill = true;
+    }
+    if (strokeStyle !== undefined) {
+      context.strokeStyle = strokeStyle;
+    }
+    if (makeStroke === false) {
+      this.makeStroke = false;
+    }
+  }
+
+  run(points: IPoint[]) {
+    this.context.beginPath();
+    for (let i = 0; i < points.length; i++) {
+      const point = points[i];
+      if (i === 0) {
+        this.context.moveTo(point[0], point[1]);
+        continue;
+      }
+      this.context.lineTo(point[0], point[1]);
+    }
+
+    if (this.makeFill) {
+      this.context.fill();
+    }
+    if (this.makeStroke) {
+      this.context.stroke();
+    }
+  }
+
+
+}
+
+
+export interface ILineDrawOnCanvasOpt {
   lineDash?: number[]; // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash
   lineWidth?: number;
-  strokeStyle?: any; // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/strokeStyle
-  fillStyle?: any;
+  fillStyle?: string;
+  strokeStyle?: string; // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/strokeStyle
+  makeStroke?: boolean;
 }
