@@ -20,10 +20,10 @@ export class PatternOnCanvasController {
     const svgProps = pathProps.svgPathProperties(getPathAsBezierInterpolation(points));
 
     const linePattern = new LinePattern(triangle, {strokeStyle: 'black'}, this.context);
-    drawPattern(linePattern, 20, 35, svgProps);
+    drawPatternAlongStroke(linePattern, 20, 35, svgProps);
 
     const arcPattern = new ArcPattern([0, 0], 7, Math.PI, 2 * Math.PI, {strokeStyle: 'black'}, this.context);
-    drawPattern(arcPattern, 20, 35, svgProps);
+    drawPatternAlongStroke(arcPattern, 20, 35, svgProps);
   }
 
   dispose() {
@@ -39,23 +39,35 @@ const triangle: IPoint[] = [
   [-10, 0],
 ];
 
-function drawPattern(
+/**
+ * Рисовать паттерн вдоль обводки.
+ * @param pattern        - паттерн, который надо нарисовать
+ * @param offsetFromEdge - отступ с краев, пиксели (в длине обводки)
+ * @param step           - шаг между паттернами, пиксели (в длине обводки)
+ * @param strokeExtends  - в этот объект парсится обводка. В нем реализованы полезные методы.
+ */
+function drawPatternAlongStroke(
   pattern: IPattern,
-  start: number, // первая точка, от которой будет отрисовам паттерн, пиксели
-  step: number, // шаг между точками отрисовки паттерна, пиксели
-  svgProps: ReturnType<typeof pathProps.svgPathProperties>,
+  offsetFromEdge: number,
+  step: number,
+  strokeExtends: ReturnType<typeof pathProps.svgPathProperties>,
 ): void {
-  for (let i = start; i < svgProps.getTotalLength() - start; i += step) {
-    const point = svgProps.getPointAtLength(i);
-    const tangent = svgProps.getTangentAtLength(i);
-    const tangentAngle = Math.atan2(tangent.y, tangent.x); // угол наклона касательной
+  for (let lenght = offsetFromEdge; lenght < strokeExtends.getTotalLength() - offsetFromEdge; lenght += step) {
+    const {x, y} = strokeExtends.getPointAtLength(lenght);
+
+    // угол наклона касательной
+    const tangent = strokeExtends.getTangentAtLength(lenght);
+    const tangentAngle = Math.atan2(tangent.y, tangent.x);
+
+    // конвертер для позиционирования точек паттерна
     const conv = Matrix.multiply(
-      Operator.rotateAtPoint([point.x, point.y], tangentAngle, 'rad'), // (2) повернуть
-      [1, 0, 0, 1, point.x, point.y],                                  // (1) переместить все точки
+      Operator.rotateAtPoint([x, y], tangentAngle, 'rad'), // (2) повернуть
+      [1, 0, 0, 1, x, y],                                  // (1) переместить все точки
     );
+
     pattern.draw(conv);
 
-    // касательная прямая
+    // прямая касательная к точке на обводке
     // const k = Math.tan(tangentAngle);
     // const b = point.y - k * point.x;
     // const x1 = point.x + 200;
