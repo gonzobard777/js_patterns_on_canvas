@@ -1,7 +1,9 @@
 import {IPoint, Matrix, Operator} from "@do-while-for-each/math";
 import * as pathProps from 'svg-path-properties';
 import {drawAsBezierInterpolation, getPathAsBezierInterpolation} from "../../app-common/bezier-interpolation";
-import {ArcPattern, IPattern, LinePattern} from "../../app-common/draw";
+import {LinePattern} from "../../app-common/pattern/line-pattern";
+import {ArcPattern} from "../../app-common/pattern/arc-pattern";
+import {IPattern} from "../../app-common/pattern/contract";
 import {points} from "../../app-common/constant";
 
 export class PatternOnCanvasController {
