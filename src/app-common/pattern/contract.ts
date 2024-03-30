@@ -1,7 +1,7 @@
 import {IMatrix} from "@do-while-for-each/math";
 
 export interface IPattern {
-  draw(conv: IMatrix): void;
+  draw(conv?: IMatrix): void;
 }
 
 export interface IPatternOpt {

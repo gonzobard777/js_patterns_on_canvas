@@ -1,12 +1,18 @@
-import {IPatternOpt} from "./contract";
+import {IMatrix} from "@do-while-for-each/math";
+import {IPattern, IPatternOpt} from "./contract";
 
-export abstract class BasePattern {
-  makeFill = false;
-  makeStroke = false;
+export abstract class BasePattern implements IPattern {
 
-  protected constructor(protected context: CanvasRenderingContext2D,
-                        protected opt: IPatternOpt,
-  ) {
+  context: CanvasRenderingContext2D;
+  opt: IPatternOpt
+
+  makeFill = false; // выполнять закраску
+  makeStroke = false; // рисовать обводку
+
+  protected constructor(context: CanvasRenderingContext2D, opt: IPatternOpt) {
+    this.context = context;
+    this.opt = opt;
+
     const {lineDash, lineWidth, fillStyle, strokeStyle} = opt;
     if (lineDash !== undefined) {
       context.setLineDash(lineDash);
@@ -23,4 +29,18 @@ export abstract class BasePattern {
       this.makeStroke = true;
     }
   }
+
+  abstract draw(conv?: IMatrix): void;
+
+  fillThenStroke(path?: Path2D) {
+    if (this.makeFill) {
+      if (path) this.context.fill(path);
+      else this.context.fill();
+    }
+    if (this.makeStroke) {
+      if (path) this.context.stroke(path);
+      else this.context.stroke();
+    }
+  }
+
 }

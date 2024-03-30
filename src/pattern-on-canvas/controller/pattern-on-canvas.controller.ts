@@ -1,8 +1,8 @@
-import {IPoint, Matrix, Operator} from "@do-while-for-each/math";
+import {Matrix, Operator} from "@do-while-for-each/math";
 import * as pathProps from 'svg-path-properties';
 import {drawAsBezierInterpolation, getPathAsBezierInterpolation} from "../../app-common/bezier-interpolation";
-import {LinePattern} from "../../app-common/pattern/line-pattern";
-import {ArcPattern} from "../../app-common/pattern/arc-pattern";
+import {LineBasedPattern} from "../../app-common/pattern/line-based.pattern";
+import {ArcBasedPattern} from "../../app-common/pattern/arc-based.pattern";
 import {IPattern} from "../../app-common/pattern/contract";
 import {points} from "../../app-common/constant";
 
@@ -19,11 +19,17 @@ export class PatternOnCanvasController {
     drawAsBezierInterpolation(this.context, points);
     const svgProps = pathProps.svgPathProperties(getPathAsBezierInterpolation(points));
 
-    const linePattern = new LinePattern(triangle, {strokeStyle: 'black'}, this.context);
-    drawPatternAlongStroke(linePattern, 20, 35, svgProps);
+    const lineBasedPattern = new LineBasedPattern(
+      {points: [[-10, 0], [0, -10], [10, 0], [-10, 0]], strokeStyle: 'black', fillStyle: 'magenta'},
+      this.context
+    );
+    drawPatternAlongStroke(lineBasedPattern, 20, 35, svgProps);
 
-    const arcPattern = new ArcPattern([0, 0], 7, Math.PI, 2 * Math.PI, {strokeStyle: 'black'}, this.context);
-    drawPatternAlongStroke(arcPattern, 20, 35, svgProps);
+    const arcBasedPattern = new ArcBasedPattern(
+      {center: [0, 0], radius: 7, startAngle: Math.PI, endAngle: 2 * Math.PI, strokeStyle: 'black'},
+      this.context
+    );
+    drawPatternAlongStroke(arcBasedPattern, 20, 35, svgProps);
   }
 
   dispose() {
@@ -32,18 +38,12 @@ export class PatternOnCanvasController {
 
 }
 
-const triangle: IPoint[] = [
-  [-10, 0],
-  [0, -10],
-  [10, 0],
-  [-10, 0],
-];
 
 /**
  * Рисовать паттерн вдоль обводки.
  * @param pattern        - паттерн, который надо нарисовать
- * @param offsetFromEdge - отступ с краев, пиксели (в длине обводки)
- * @param step           - шаг между паттернами, пиксели (в длине обводки)
+ * @param offsetFromEdge - отступ от краев, пиксели (по линии обводки)
+ * @param step           - шаг между паттернами, пиксели (по линии обводки)
  * @param strokeExtends  - в этот объект парсится обводка. В нем реализованы полезные методы.
  */
 function drawPatternAlongStroke(
@@ -52,11 +52,11 @@ function drawPatternAlongStroke(
   step: number,
   strokeExtends: ReturnType<typeof pathProps.svgPathProperties>,
 ): void {
-  for (let lenght = offsetFromEdge; lenght < strokeExtends.getTotalLength() - offsetFromEdge; lenght += step) {
-    const {x, y} = strokeExtends.getPointAtLength(lenght);
+  for (let len = offsetFromEdge; len < strokeExtends.getTotalLength() - offsetFromEdge; len += step) {
+    const {x, y} = strokeExtends.getPointAtLength(len);
 
     // угол наклона касательной
-    const tangent = strokeExtends.getTangentAtLength(lenght);
+    const tangent = strokeExtends.getTangentAtLength(len);
     const tangentAngle = Math.atan2(tangent.y, tangent.x);
 
     // конвертер для позиционирования точек паттерна
