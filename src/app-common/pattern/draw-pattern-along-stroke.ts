@@ -16,27 +16,22 @@ export function drawPatternAlongStroke(
   step: number,
   strokeExtends: ReturnType<typeof pathProps.svgPathProperties>,
 ): void {
-  for (let len = offsetFromEdge; len < strokeExtends.getTotalLength() - offsetFromEdge; len += step) {
 
-    const {x, y} = strokeExtends.getPointAtLength(len);
+  for (let len = offsetFromEdge; len < strokeExtends.getTotalLength() - offsetFromEdge; len += step) {
 
     // угол наклона касательной
     const tangent = strokeExtends.getTangentAtLength(len);
     const tangentAngle = Math.atan2(tangent.y, tangent.x);
 
+    const {x, y} = strokeExtends.getPointAtLength(len);
+
     // конвертер для позиционирования точек паттерна
     const conv = Matrix.multiply(
       Operator.rotateAtPoint([x, y], tangentAngle, 'rad'), // (2) повернуть
-      [1, 0, 0, 1, x, y],                                  // (1) переместить все точки
+      [1, 0, 0, 1, x, y],                                  // (1) переместить все точки в точку касательной
     );
 
     pattern.draw(conv);
-
-    // прямая касательная к точке на обводке
-    // const k = Math.tan(tangentAngle);
-    // const b = point.y - k * point.x;
-    // const x1 = point.x + 200;
-    // const x2 = point.x - 200;
-    // drawLine(context, [[x1, k * x1 + b], [x2, k * x2 + b]], {strokeStyle: 'blue'});
   }
+
 }
