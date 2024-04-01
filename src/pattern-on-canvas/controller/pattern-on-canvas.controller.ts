@@ -1,6 +1,6 @@
 import * as pathProps from 'svg-path-properties';
 import {drawAsBezierInterpolation, getPathAsBezierInterpolation} from "../../app-common/bezier-interpolation";
-import {drawPatternAlongStroke, getConverter} from "../../app-common/pattern/draw-pattern-along-stroke";
+import {drawPatternAlongStroke, getPatternAlongStrokeConverter} from "../../app-common/pattern/draw-pattern-along-stroke";
 import {PointBasedPattern} from "../../app-common/pattern/point-based.pattern";
 import {LineBasedPattern} from "../../app-common/pattern/line-based.pattern";
 import {ArcBasedPattern} from "../../app-common/pattern/arc-based.pattern";
@@ -52,7 +52,7 @@ export class PatternOnCanvasController {
       this.context
     );
     for (let len = segmentLen / 2; len < totalLen; len += segmentLen * 2) {
-      const conv = getConverter(len, svgProps);
+      const conv = getPatternAlongStrokeConverter(len, svgProps);
       pattern1.draw(conv);
     }
 
@@ -64,7 +64,7 @@ export class PatternOnCanvasController {
       this.context
     );
     for (let len = segmentLen * 1.5; len < totalLen; len += segmentLen * 2) {
-      const conv = getConverter(len, svgProps);
+      const conv = getPatternAlongStrokeConverter(len, svgProps);
       pattern2.draw(conv);
     }
   }

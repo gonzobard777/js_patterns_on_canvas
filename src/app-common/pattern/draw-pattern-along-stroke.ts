@@ -18,13 +18,13 @@ export function drawPatternAlongStroke(
 ): void {
 
   for (let len = offsetFromEdge; len < strokeExtends.getTotalLength() - offsetFromEdge; len += step) {
-    const conv = getConverter(len, strokeExtends);
+    const conv = getPatternAlongStrokeConverter(len, strokeExtends);
     pattern.draw(conv);
   }
 
 }
 
-export function getConverter(
+export function getPatternAlongStrokeConverter(
   len: number,
   strokeExtends: ReturnType<typeof pathProps.svgPathProperties>,
 ) {
