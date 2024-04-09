@@ -14,6 +14,14 @@ import {IPoint} from "@do-while-for-each/math";
 export const width = 350;
 export const height = 300;
 
+export enum InterpolationFigureType {
+  Line = 1,
+  Polygon = 2,
+}
+
+export const figureType = InterpolationFigureType.Line;
+export const tension = 1;
+
 export const points: IPoint[] = [
   [15.574704096838559, 93.20440028274061],
   [95.75053229695231, 39.085716247665914],
