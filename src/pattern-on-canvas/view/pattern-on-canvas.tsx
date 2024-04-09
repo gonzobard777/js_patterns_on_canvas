@@ -1,6 +1,7 @@
 import {useEffect, useRef, useState} from 'react'
 import {PatternOnCanvasController} from "../controller/pattern-on-canvas.controller";
 import {height, width} from "../../app-common/constant";
+import s from './pattern-on-canvas.module.css'
 
 export function PatternOnCanvas() {
   const canvasRef = useRef(null);
@@ -13,7 +14,8 @@ export function PatternOnCanvas() {
   }, []);
 
   return (
-    <canvas width={width}
+    <canvas className={s.canvas}
+      width={width}
             height={height}
             ref={canvasRef}/>
   );

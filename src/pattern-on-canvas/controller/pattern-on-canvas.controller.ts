@@ -1,10 +1,12 @@
 import * as pathProps from 'svg-path-properties';
-import {drawAsBezierInterpolation, getPathAsBezierInterpolation} from "../../app-common/bezier-interpolation";
+import {IPoint} from "@do-while-for-each/math";
 import {drawPatternAlongStroke, getPatternAlongStrokeConverter} from "../../app-common/pattern/draw-pattern-along-stroke";
+import {drawAsBezierInterpolation, getPathAsBezierInterpolation} from "../../app-common/bezier-interpolation";
 import {PointBasedPattern} from "../../app-common/pattern/point-based.pattern";
 import {LineBasedPattern} from "../../app-common/pattern/line-based.pattern";
 import {ArcBasedPattern} from "../../app-common/pattern/arc-based.pattern";
 import {points} from "../../app-common/constant";
+
 
 export class PatternOnCanvasController {
 
@@ -13,6 +15,27 @@ export class PatternOnCanvasController {
   setElement(element: HTMLCanvasElement) {
     this.context = element.getContext('2d')!;
     this.render();
+  }
+
+  render3() {
+    const points: IPoint[] = [
+      [100, 210],
+      [170, 70],
+      [220, 190],
+      [100, 210],
+    ];
+
+    this.context.beginPath();
+    for (let i = 0; i < points.length; i++) {
+      const point = points[i];
+      if (i === 0)
+        this.context.moveTo(point[0], point[1]);
+      else
+        this.context.lineTo(point[0], point[1]);
+    }
+    this.context.stroke();
+
+
   }
 
   render() {
