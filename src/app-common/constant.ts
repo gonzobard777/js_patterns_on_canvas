@@ -1,4 +1,5 @@
 import {IPoint} from "@do-while-for-each/math";
+import {InterpFigureType} from "./contract";
 
 /**
  *!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -14,12 +15,6 @@ import {IPoint} from "@do-while-for-each/math";
 
 export const width = 350;
 export const height = 300;
-
-// Тип фигуры для интерполяции
-export enum InterpFigureType {
-  Line = 1,
-  Polygon = 2,
-}
 
 export const interpFigureType = InterpFigureType.Polygon;
 export const tension = 1;

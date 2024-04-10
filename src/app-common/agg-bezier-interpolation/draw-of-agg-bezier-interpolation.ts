@@ -1,6 +1,7 @@
 import {IPoint} from "@do-while-for-each/math";
 import {getPathOfAggBezierInterpolation} from "./get-path-of-agg-bezier-interpolation";
-import {InterpFigureType} from "../constant";
+
+import {InterpFigureType} from "../contract";
 
 // рисование на канвасе
 export function drawOfAggBezierInterpolation(
