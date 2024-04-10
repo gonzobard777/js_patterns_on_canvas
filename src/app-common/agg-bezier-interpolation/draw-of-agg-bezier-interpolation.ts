@@ -1,9 +1,9 @@
 import {IPoint} from "@do-while-for-each/math";
-import {pathAsAggBezierInterpolation} from "./path-as-agg-bezier-interpolation";
+import {getPathOfAggBezierInterpolation} from "./get-path-of-agg-bezier-interpolation";
 import {InterpFigureType} from "../constant";
 
 // рисование на канвасе
-export function drawAsAggBezierInterpolation(
+export function drawOfAggBezierInterpolation(
   context: CanvasRenderingContext2D,
   type: InterpFigureType,
   points: IPoint[],
@@ -14,7 +14,7 @@ export function drawAsAggBezierInterpolation(
   if (strokeStyle) {
     context.strokeStyle = strokeStyle;
   }
-  const pathStr = pathAsAggBezierInterpolation(type, points, tension);
+  const pathStr = getPathOfAggBezierInterpolation(type, points, tension);
   context.stroke(new Path2D(pathStr));
 
 }

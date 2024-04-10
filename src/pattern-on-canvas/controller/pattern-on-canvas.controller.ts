@@ -1,6 +1,6 @@
 import * as pathProps from 'svg-path-properties';
 import {drawPatternAlongStroke, getPatternAlongStrokeConverter} from "../../app-common/pattern/draw-pattern-along-stroke";
-import {drawAsAggBezierInterpolation, pathAsAggBezierInterpolation} from "../../app-common/agg-bezier-interpolation";
+import {drawOfAggBezierInterpolation, getPathOfAggBezierInterpolation} from "../../app-common/agg-bezier-interpolation";
 import {PointBasedPattern} from "../../app-common/pattern/point-based.pattern";
 import {LineBasedPattern} from "../../app-common/pattern/line-based.pattern";
 import {interpFigureType, points, tension} from "../../app-common/constant";
@@ -17,8 +17,8 @@ export class PatternOnCanvasController {
   }
 
   render() {
-    drawAsAggBezierInterpolation(this.context, interpFigureType, points, tension);
-    const svgProps = pathProps.svgPathProperties(pathAsAggBezierInterpolation(interpFigureType, points, tension));
+    drawOfAggBezierInterpolation(this.context, interpFigureType, points, tension);
+    const svgProps = pathProps.svgPathProperties(getPathOfAggBezierInterpolation(interpFigureType, points, tension));
 
     const lineBasedPattern = new LineBasedPattern(
       {points: [[-10, 0], [0, -10], [10, 0], [-10, 0]], strokeStyle: 'black', fillStyle: 'magenta'},
@@ -40,14 +40,14 @@ export class PatternOnCanvasController {
   }
 
   render2() {
-    const svgProps = pathProps.svgPathProperties(pathAsAggBezierInterpolation(interpFigureType, points, tension));
+    const svgProps = pathProps.svgPathProperties(getPathOfAggBezierInterpolation(interpFigureType, points, tension));
     const totalLen = svgProps.getTotalLength();
 
     const patternBaseLen = 20;
     const offset = 15;
     const segmentLen = patternBaseLen + offset * 2;
     this.context.setLineDash([segmentLen])
-    drawAsAggBezierInterpolation(this.context, interpFigureType, points, tension, 'blue');
+    drawOfAggBezierInterpolation(this.context, interpFigureType, points, tension, 'blue');
     const pattern1 = new LineBasedPattern(
       {points: [[-10, 0], [0, -10], [10, 0], [-10, 0]], strokeStyle: 'blue', fillStyle: 'blue'},
       this.context
@@ -59,7 +59,7 @@ export class PatternOnCanvasController {
 
     this.context.lineDashOffset = segmentLen;
     this.context.setLineDash([segmentLen])
-    drawAsAggBezierInterpolation(this.context, interpFigureType, points, tension, 'red');
+    drawOfAggBezierInterpolation(this.context, interpFigureType, points, tension, 'red');
     const pattern2 = new LineBasedPattern(
       {points: [[-10, 0], [0, 10], [10, 0], [-10, 0]], strokeStyle: 'red', fillStyle: 'red'},
       this.context
